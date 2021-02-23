@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -14,14 +15,16 @@ type MongoInstance struct {
 	Db     *mongo.Database
 }
 
-const dbName = "go-fiber"
-const mongoURI = "mongodb://localhost:27017/" + dbName
+// const dbName = "go-fiber"
+// const mongoURI = "mongodb://localhost:27017/" + dbName
 
 // Repo instnace
 var Repo *MongoInstance
 
 // Connect connect db
 func Connect() error {
+	var dbName = os.Getenv("DB_NAME")
+	var mongoURI = os.Getenv("MONGODB_URI") + "/" + dbName
 	client, err := mongo.NewClient(options.Client().ApplyURI(mongoURI))
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
